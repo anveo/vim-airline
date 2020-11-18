@@ -518,4 +518,7 @@ else
     s:separators[from .. to] = [from, to, inverse]
     s:exec_separator({}, from, to, inverse, '')
   enddef
+  def airline#highlighter#add_accent(accent: string): void # {{{2
+    s:accents[accent] = 1
+  enddef
 endif " }}}1
