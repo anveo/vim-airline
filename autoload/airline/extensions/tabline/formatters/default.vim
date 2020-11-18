@@ -4,14 +4,9 @@
 scriptencoding utf-8
 
 if !exists(":def") || (exists(":def") && get(g:, "airline_experimental", 0)==0)
-	let s:fnamecollapse = get(g:, 'airline#extensions#tabline#fnamecollapse', 1)
-	let s:fnametruncate = get(g:, 'airline#extensions#tabline#fnametruncate', 0)
-	let s:buf_nr_format = get(g:, 'airline#extensions#tabline#buffer_nr_format', '%s: ')
-	let s:buf_nr_show = get(g:, 'airline#extensions#tabline#buffer_nr_show', 0)
-	let s:buf_modified_symbol = g:airline_symbols.modified
-
   " Legacy VimScript implementation {{{1
   function! airline#extensions#tabline#formatters#default#format(bufnr, buffers) " {{{2
+    let fnametruncate = get(g:, 'airline#extensions#tabline#fnametruncate', 0)
     let fmod = get(g:, 'airline#extensions#tabline#fnamemod', ':~:.')
     let _ = ''
 
@@ -22,24 +17,27 @@ if !exists(":def") || (exists(":def") && get(g:, "airline_experimental", 0)==0)
       " Neovim Terminal
       let _ = substitute(name, '\(term:\)//.*:\(.*\)', '\1 \2', '')
     else
-      if s:fnamecollapse
+      if get(g:, 'airline#extensions#tabline#fnamecollapse', 1)
         " Does not handle non-ascii characters like Cyrillic: 'D/Учёба/t.c'
         "let _ .= substitute(fnamemodify(name, fmod), '\v\w\zs.{-}\ze(\\|/)', '', 'g')
         let _ .= pathshorten(fnamemodify(name, fmod))
       else
         let _ .= fnamemodify(name, fmod)
       endif
-      if a:bufnr != bufnr('%') && s:fnametruncate && strlen(_) > s:fnametruncate
-        let _ = strpart(_, 0, s:fnametruncate)
+      if a:bufnr != bufnr('%') && fnametruncate && strlen(_) > fnametruncate
+        let _ = strpart(_, 0, fnametruncate)
       endif
     endif
     return airline#extensions#tabline#formatters#default#wrap_name(a:bufnr, _)
   endfunction
   function! airline#extensions#tabline#formatters#default#wrap_name(bufnr, buffer_name) " {{{2
-    let _ = s:buf_nr_show ? printf(s:buf_nr_format, a:bufnr) : ''
+    let buf_nr_format = get(g:, 'airline#extensions#tabline#buffer_nr_format', '%s: ')
+    let buf_nr_show = get(g:, 'airline#extensions#tabline#buffer_nr_show', 0)
+
+    let _ = buf_nr_show ? printf(buf_nr_format, a:bufnr) : ''
     let _ .= substitute(a:buffer_name, '\\', '/', 'g')
     if getbufvar(a:bufnr, '&modified') == 1
-      let _ .= s:buf_modified_symbol
+      let _ .= g:airline_symbols.modified
     endif
     return _
   endfunction
