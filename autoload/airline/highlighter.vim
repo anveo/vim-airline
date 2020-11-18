@@ -518,4 +518,4 @@ else
     s:separators[from .. to] = [from, to, inverse]
     s:exec_separator({}, from, to, inverse, '')
   enddef
-endif
+endif " }}}1
