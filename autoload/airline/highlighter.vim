@@ -6,7 +6,9 @@ scriptencoding utf-8
 let s:is_win32term = (has('win32') || has('win64')) &&
                    \ !has('gui_running') &&
                    \ (empty($CONEMUBUILD) || &term !=? 'xterm') &&
+									 \ empty($WTSESSION) &&
                    \ !(exists("+termguicolors") && &termguicolors)
+
 
 let s:separators = {}
 let s:accents = {}
